@@ -36,7 +36,7 @@ fn format_capacity(capacity: u8) -> String {
     }
 }
 main!(|args: Cli, log_level: verbosity| {
-    let stats = diskspace(&args.mount_point).unwrap();
+    let stats = diskspace(args.mount_point.as_str()).unwrap();
     
     let base = if args.human_readable_base2 { HUMAN_BASE_1024 } 
                 else if args.human_readable_base10 { HUMAN_BASE_1000 } 

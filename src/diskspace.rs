@@ -27,9 +27,9 @@ pub fn human_readable_size(value: u64, base: u64) -> String {
 
 #[test]
 fn test_human_readable_size() {
-    let KB = 1024;
-    let MB = 1024 * 1024;
-    let GB = 1024 * 1024 * 1024;
+    const KB : u64 = 1024;
+    const MB : u64 = 1024 * 1024;
+    const GB : u64 = 1024 * 1024 * 1024;
 
     assert_eq!(human_readable_size(0, HUMAN_BASE), "0B");
     assert_eq!(human_readable_size(0, HUMAN_BASE_1000), "0B");
@@ -39,9 +39,9 @@ fn test_human_readable_size() {
     assert_eq!(human_readable_size(999, HUMAN_BASE_1000), "999B");
     assert_eq!(human_readable_size(999, HUMAN_BASE_1024), "999B");
 
-    assert_eq!(human_readable_size(1024, HUMAN_BASE), "1024B");
-    assert_eq!(human_readable_size(1024, HUMAN_BASE_1000), "1KB");
-    assert_eq!(human_readable_size(1024, HUMAN_BASE_1024), "1KB");
+    assert_eq!(human_readable_size(KB, HUMAN_BASE), "1024B");
+    assert_eq!(human_readable_size(KB, HUMAN_BASE_1000), "1KB");
+    assert_eq!(human_readable_size(KB, HUMAN_BASE_1024), "1KB");
 
     assert_eq!(human_readable_size(MB, HUMAN_BASE), "1048576B");
     assert_eq!(human_readable_size(MB, HUMAN_BASE_1000), "1MB");
@@ -65,15 +65,15 @@ impl DiskStats {
                     }
     }
 }
-pub fn diskspace(mount_point: &String) -> Result<DiskStats, String> {
+pub fn diskspace(mount_point: &str) -> Result<DiskStats, String> {
     unsafe {
-        let mountp = CString::new(mount_point.as_str()).unwrap();
+        let mountp = CString::new(mount_point).unwrap();
         let mut stats: libc::statvfs = zeroed();
         if libc::statvfs(mountp.as_ptr(), &mut stats) != 0 {
             return Err(format!("Unable to retrieve mount point information {}", mount_point));
         }
-        let disk_stats = DiskStats::new( stats.f_frsize * stats.f_blocks as u64, 
-                                         stats.f_frsize * stats.f_bfree as u64);
+        let disk_stats = DiskStats::new( stats.f_frsize * u64::from(stats.f_blocks), 
+                                         stats.f_frsize * u64::from(stats.f_bfree));
         Ok(disk_stats)
     }
 }
