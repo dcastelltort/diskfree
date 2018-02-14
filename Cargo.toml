@@ -5,3 +5,5 @@ authors = ["Damien Castelltort <dcastelltort@gmail.com>"]
 
 [dependencies]
 libc = "0.2.36"
+quicli = "0.2"
+ansi_term = "0.10.2"
